@@ -88,7 +88,7 @@ public class Alarm {
     	private KThread thread;
     	private long wakeTime;
     	
-
+    	//similar to KThread implementation
     	public int compareTo(threadTime threadTime){
     		if(wakeTime > threadTime.wakeTime){
     			return 1;
