@@ -31,6 +31,10 @@ import nachos.machine.*;
  */
 public class KThread {
 	
+	/*Added two new variables for use
+	 * an integer for our called thread
+	 * a LinkedList to add our threads
+	 */
 	public static int calledThread = 0;
 	public static LinkedList joinedList;
 	
@@ -65,6 +69,7 @@ public class KThread {
 
 	    createIdleThread();
 		}
+	// Create our LinkedList for our threads.
 	joinedList = new LinkedList();
     }
     
@@ -205,6 +210,10 @@ public class KThread {
 	currentThread.status = statusFinished;
 	
 	sleep();
+	/* Get first thread in our list. If it is
+	 * not null, readys thread and removes first
+	 * thread in our list and resets calledThread to 0.
+	 */
 	KThread thread = (KThread) joinedList.getFirst();
 	if (thread != null){
 	thread.ready();
@@ -292,7 +301,12 @@ public class KThread {
     @SuppressWarnings({ "unchecked", "static-access" })
 	public void join() {
 	Lib.debug(dbgThread, "Joining to thread: " + toString());
-
+	/* We are using calledThread to be used
+	 * to check what is current thread running
+	 * by tracking if it is finished. We use the list
+	 * to be able to switch between threads by utilizing
+	 *  sleep function.
+	 */
 	Lib.assertTrue(this != currentThread);
 	if (this.calledThread == 0){
 
