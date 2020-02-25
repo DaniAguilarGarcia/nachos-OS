@@ -31,10 +31,13 @@ public class Alarm {
     public void timerInterrupt() {
     	long currTime = Machine.timer().getTime();
     	boolean intStatus = Machine.interrupt().disable();
-    	
-    	while(!waitQueue.isEmpty() && waitQueue.peek().wakeTime <= currTime){
-    		ThreadTime threadTime = waitQueue.poll();
-    		KThread thread = threadTime.thread;
+    	/**
+    	 * Place them on the ready queue in the timer interrupt handler after they 
+    	 *have waited for some time. This will wake threads
+    	 */
+    	while(!queueWait.isEmpty() && queueWait.peek().wakeTime <= currTime){
+    		threadTime tempTime = queueWait.poll();
+    		KThread thread = tempTime.thread;
     		if(thread != null){
     			thread.ready();
     		}
@@ -62,34 +65,41 @@ public class Alarm {
 	// for now, cheat just to get something working (busy waiting is bad)
 	long wakeTime = Machine.timer().getTime() + x;
 	KThread thread = KThread.currentThread();
-	ThreadTime threadTime = new ThreadTime(thread, wakeTime);
+	
+	threadTime tempTime = new threadTime();
 	
 	boolean intStatus = Machine.interrupt().disable();
-	waitQueue.add(threadTime);
+	
+	//Place new ThreadTime into queueWait while it checks its waketime
+	queueWait.add(tempTime);
+	
 	thread.sleep();
+	
 	Machine.interrupt().restore(intStatus);
 	
 	while (wakeTime > Machine.timer().getTime())
 	    KThread.yield();
     }
-    
-    private class ThreadTime implements Comparable<ThreadTime>{
-    	public ThreadTime (KThread thread, long wakeTime){
-    		this.thread = thread;
-    		this.wakeTime = wakeTime;
-    }
-    	public int compareTo(ThreadTime threadTime){
-    		if(this.wakeTime > threadTime.wakeTime){
+    /*
+     * New class to compare time
+     */
+    private class threadTime implements Comparable<threadTime>{
+    	
+    	private KThread thread;
+    	private long wakeTime;
+    	
+
+    	public int compareTo(threadTime threadTime){
+    		if(wakeTime > threadTime.wakeTime){
     			return 1;
-    		} else if(this.wakeTime < threadTime.wakeTime){
+    		} else if(wakeTime < threadTime.wakeTime){
     			return -1;
     		} else {
     			return 0;
     		}
     	}
-    	private KThread thread;
-    	private long wakeTime;
+    	
     }
-    
-    private PriorityQueue<ThreadTime> waitQueue = new PriorityQueue<ThreadTime>();
+    //This is used to track when threads wake
+    private PriorityQueue<threadTime> queueWait = new PriorityQueue<threadTime>();
 }

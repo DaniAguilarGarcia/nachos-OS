@@ -10,6 +10,8 @@ import nachos.machine.*;
  *
  * <p>
  * You must implement this.
+ * This Condition class emulates Condition.java using Lock
+ * instead of Semaphore.
  *
  * @see	nachos.threads.Condition
  */
@@ -26,7 +28,7 @@ public class Condition2 {
 	
     public Condition2(Lock conditionLock) {
 	this.conditionLock = conditionLock;
-	
+	// Initiate a linkedlist to track our conditionlocks
 	waitQueue = new LinkedList<Lock>();
 	}
     
@@ -39,7 +41,9 @@ public class Condition2 {
      */
     public void sleep() {
 	Lib.assertTrue(conditionLock.isHeldByCurrentThread());
+//	Lock variable to simulate Semaphore class in Threads
 	Lock waiter = new Lock();
+//  add our new Lock condition to list
 	waitQueue.add(waiter);
 	
 	conditionLock.release();
@@ -55,6 +59,7 @@ public class Condition2 {
 	Lib.assertTrue(conditionLock.isHeldByCurrentThread());
 	
 	if (!waitQueue.isEmpty())
+		//release first Lock  
 	    ((Lock) waitQueue.removeFirst()).release();
     }
 
@@ -68,7 +73,10 @@ public class Condition2 {
 	while (!waitQueue.isEmpty())
 	    wake();
     }
-
+    /*
+     * 
+     * waitQueue is to place our Locks in their order they arrive
+     */
     private Lock conditionLock;
     private LinkedList<Lock> waitQueue;
 }
