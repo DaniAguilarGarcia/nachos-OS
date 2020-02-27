@@ -1,0 +1,8 @@
+Nivaldo DeMello
+
+I believe I have questions 1-3 working so far.
+
+1)	Updated join() with additional code. 
+	Updated finish() with the call to join()
+2)	Updated Condition2.java with code for interrupting without semaphores
+3)	Updated Alarm.java to wait x amount of time
