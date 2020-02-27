@@ -194,9 +194,6 @@ public class PriorityScheduler extends Scheduler {
 
 		KThread nextThread = null; //Added Start
 
-		//this.print(); //debug
-
-		//System.out.print("Inside 'pickNextThread:' transferPriority: " + transferPriority + "\n"); //debug
 
 		for(Iterator<KThread> ts = waitQueue.iterator(); ts.hasNext();){
 			KThread thread = ts.next();
@@ -207,18 +204,16 @@ public class PriorityScheduler extends Scheduler {
 			}
 		}
 
-		//System.out.print("Inside 'pickNextThread:' return Thread: "+ nextThread + "\n"); //debug
 
 		return nextThread;
 	}
 
 
 	public int getEffectivePriority(){ //ADDED START
-		//System.out.print("[Inside getEffectivePriority] transferPriority: " + transferPriority + "\n"); //debug
-
+		
 		//if do not transfer priority, return minimum priority
 		if(transferPriority == false){
-			//System.out.print("Inside 'getEffectPriority:' false branch\n"); //debug
+			
 			return priorityMinimum;
 		}
 
