@@ -1,7 +1,5 @@
 package nachos.threads;
 
-import java.util.LinkedList;
-
 import nachos.machine.*;
 
 /**
@@ -30,10 +28,6 @@ import nachos.machine.*;
  * </pre></blockquote>
  */
 public class KThread {
-	
-	public static int calledThread = 0;
-	public static LinkedList joinedList;
-	
     /**
      * Get the current thread.
      *
@@ -48,9 +42,7 @@ public class KThread {
      * Allocate a new <tt>KThread</tt>. If this is the first <tt>KThread</tt>,
      * create an idle thread as well.
      */
-    @SuppressWarnings("rawtypes")
-	public KThread() {
-    	
+    public KThread() {
 	if (currentThread != null) {
 	    tcb = new TCB();
 	}	    
@@ -64,10 +56,11 @@ public class KThread {
 	    restoreState();
 
 	    createIdleThread();
-		}
-	joinedList = new LinkedList();
+	}
+	
+	
+	
     }
-    
 
     /**
      * Allocate a new KThread.
@@ -193,9 +186,22 @@ public class KThread {
      */
     public static void finish() {
 	Lib.debug(dbgThread, "Finishing thread: " + currentThread.toString());
-	
+
 	Machine.interrupt().disable();
 
+	//DID THIS TASK1
+	ThreadQueue curJoinQueue = currentThread.joinQueue;
+	
+	if(curJoinQueue != null){
+		KThread thread = curJoinQueue.nextThread();
+		while(thread != null){
+			thread.ready();
+			thread = curJoinQueue.nextThread();
+		}
+	}
+	
+	//DID THIS TASK1 END
+	
 	Machine.autoGrader().finishingCurrentThread();
 
 	Lib.assertTrue(toBeDestroyed == null);
@@ -205,13 +211,6 @@ public class KThread {
 	currentThread.status = statusFinished;
 	
 	sleep();
-	KThread thread = (KThread) joinedList.getFirst();
-	if (thread != null){
-	thread.ready();
-	joinedList.removeFirst();
-
-	calledThread = 0;
-	}
     }
 
     /**
@@ -255,7 +254,7 @@ public class KThread {
      * so that it can be rescheduled. Otherwise, <tt>finish()</tt> should have
      * scheduled this thread to be destroyed by the next thread to run.
      */
-    public static void sleep() {
+    public static void sleep() { 
 	Lib.debug(dbgThread, "Sleeping thread: " + currentThread.toString());
 	
 	Lib.assertTrue(Machine.interrupt().disabled());
@@ -289,26 +288,28 @@ public class KThread {
      * call is not guaranteed to return. This thread must not be the current
      * thread.
      */
-    @SuppressWarnings({ "unchecked", "static-access" })
-	public void join() {
+    public void join() {
 	Lib.debug(dbgThread, "Joining to thread: " + toString());
-
 	Lib.assertTrue(this != currentThread);
-	if (this.calledThread == 0){
-
-		calledThread = 1;
-		if (this.status == statusFinished)
-			return;
-		else
-		{
-			this.joinedList.add(currentThread);
-			currentThread.sleep();
-		}
-		}
-	}
-		
     
-
+	//DID THIS
+		boolean intStatus = Machine.interrupt().disable();
+		
+		if(joinQueue == null){
+			joinQueue = ThreadedKernel.scheduler.newThreadQueue(true);
+			joinQueue.acquire(currentThread);
+		}
+		
+		if(this.status != statusFinished){
+			joinQueue.waitForAccess(currentThread);
+			 //currentThread.sleep();
+			sleep(); //AL
+			
+		}
+		Machine.interrupt().restore(intStatus);
+			//Machine.interrupt().enable();
+		}	
+    //DID THIS END
 
     /**
      * Create the idle thread. Whenever there are no threads ready to be run,
@@ -412,6 +413,8 @@ public class KThread {
 	Lib.assertTrue(this == currentThread);
     }
 
+    static KThread thread0, thread1, thread2; //ADDED THIS might delete 
+    
     private static class PingTest implements Runnable {
 	PingTest(int which) {
 	    this.which = which;
@@ -434,10 +437,115 @@ public class KThread {
     public static void selfTest() {
 	Lib.debug(dbgThread, "Enter KThread.selfTest");
 	
-	new KThread(new PingTest(1)).setName("forked thread").fork();
-	new PingTest(0).run();
+	//added might delete
+	thread0 = new KThread(new PingTest(0)).setName("forked thread"); //ADDED
+	thread1 = new KThread(new PingTest(1)).setName("forked thread"); //ADDED
+	thread2 = new KThread(new PingTest(2)).setName("forked thread"); //ADDED
+	
+	//might delete 
+	
+	thread0.fork(); //ADDED 
+	thread1.fork(); //ADDED 
+	thread2.fork(); //ADDED 
+	//thread2.join(); //ADDED 
+	
+	//new KThread(new PingTest(1)).setName("forked thread").fork();
+	//new PingTest(0).run();
+	
+	 //joinTest(); //did this 
+	 
     }
-
+    
+    //ADDED THIS 
+    public static void test1(){
+    	Joinee joinee = new Joinee();
+    	KThread joineeThread = new KThread(joinee).setName("Joinee");
+    	KThread joiner = new KThread(new Joiner(joineeThread)).setName("Joiner");
+    	System.out.println("\n--Case1: x joins y and x runs first--");
+    	joiner.fork();
+    	joineeThread.fork();
+    } //ADDED THIS END
+    
+    //ADDED 
+    public static void test2(){
+    	KThread joinee = new KThread(new Joinee()).setName("Joinee");
+    	KThread joiner   = new KThread(new Joiner(joinee)).setName("Joiner");
+    	System.out.println("\n--Case2: x joins y and y runs first--");
+    	joinee.fork();
+    	joiner.fork();
+    }
+    //ADDED 
+    public static void test3(){
+    	KThread joineeZ = new KThread (new Joinee()).setName("JoineeZ");
+    	KThread joinerY = new KThread (new Joiner(joineeZ)).setName("JoinerY");
+    	KThread joinerX = new KThread(new Joiner(joineeZ)).setName("JoinerX");
+    	System.out.println("\n--Case3: x and y join on z; z must finish first then either x or y finishes--"); 
+    			joinerX.fork();
+    			joineeZ.fork();
+    			joinerY.fork();
+    			ThreadedKernel.alarm.waitUntil(100000);
+    }
+    
+    //ADDED 
+    private static void test4(){
+    	KThread joineeZ  = new KThread(new Joinee()).setName("JoineeZ");
+    	KThread joineeY  = new KThread(new Joinee()).setName("JoineeY");
+    	KThread joinerX  = new KThread(new SuperJoiner(joineeY,joineeZ)).setName("JoinerX");
+    	System.out.println("\n--Case4: super joiner x joins y and z; y and z must finish x-- ");
+    	joineeZ.fork();
+    	joinerX.fork();
+    	joineeY.fork();
+    }
+    
+    private static class Joiner implements Runnable{ //DID THIS might delete
+    	private KThread joinee;
+    	
+    	Joiner(KThread joiNee){
+    		joinee=joiNee;
+    	}
+    	
+    
+    	public void run(){ 
+    		System.out.println("Joiner:before joining " + joinee.getName());
+    		joinee.join();
+    		System.out.println("Joiner:after joining "+ joinee.getName());
+    	}
+    }
+    
+    private static class Joinee implements Runnable{
+    	public void run(){
+    		System.out.println("Joinee:Happy running");    		
+    	}
+ 
+}
+    
+    private static class SuperJoiner implements	Runnable{
+    	private KThread joinee1,joinee2;
+    	
+    	SuperJoiner(KThread joiNee1, KThread joiNee2){
+    		joinee1 = joiNee1;
+    		joinee2 = joiNee2;
+    	}
+    	
+    	public void run(){
+    		System.out.println("Joiner: before joining " + joinee1.getName());
+    		joinee1.join();
+    		System.out.println("Joiner: after joining " + joinee1.getName());
+    		System.out.print("Joiner:before joining " + joinee2.getName());
+    		joinee2.join();
+    		System.out.println("Joiner: after joining " + joinee2.getName());
+    	}
+    }
+    	
+    // DID THIS 
+      private static void joinTest(){   
+      //test1();
+    	  //test2();
+    	   //test3();
+    	  //test4();
+      }
+     
+    
     private static final char dbgThread = 't';
 
     /**
@@ -462,9 +570,9 @@ public class KThread {
     private String name = "(unnamed thread)";
     private Runnable target;
     private TCB tcb;
-
+    private ThreadQueue joinQueue = null; //ADDED THIS
     /**
-     * Unique identifer for this thread. Used to deterministically compare
+     * Unique identifier for this thread. Used to deterministically compare
      * threads.
      */
     private int id = numCreated++;
@@ -475,4 +583,5 @@ public class KThread {
     private static KThread currentThread = null;
     private static KThread toBeDestroyed = null;
     private static KThread idleThread = null;
+    private static KThread testThread = null; //ADDED THIS
 }
