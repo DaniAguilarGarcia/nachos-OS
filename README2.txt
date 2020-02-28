@@ -10,6 +10,6 @@ Task 1:
 
 Credits:
 M:
-Daniela Aguilar: 
-Nivaldo DeMello:
+Daniela Aguilar: Tested and manipulated different codes to find the best one to submit. 
+Nivaldo DeMello:	Updated join() with additional code. Updated finish() with the call to join().
 Akeem:
