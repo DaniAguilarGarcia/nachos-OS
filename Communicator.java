@@ -14,9 +14,8 @@ public class Communicator {
      * Allocate a new communicator.
      */
     public Communicator() {
-    	locker = new Lock();
-    	speaker = new Condition(locker);
-    	listener = new Condition(locker);
+    	this.listenQueue = ThreadedKernel.scheduler.newThreadQueue(true);
+    	this.speakQueue = ThreadedKernel.scheduler.newThreadQueue(true);
     }
 
     /**
@@ -30,15 +29,22 @@ public class Communicator {
      * @param	word	the integer to transfer.
      */
     public void speak(int word) {
-    	locker.acquire();
-    	numSpeakers += 1;
-    	while(numListeners == 0){
-    		listener.sleep();
+    	boolean intStatus = Machine.interrupt().disable();
+    	
+    	KThread thread = listenQueue.nextThread();
+    	
+    	while (thread == null) {
+    		speakQueue.waitForAccess(KThread.currentThread());
+    		
+    		KThread.sleep();
+    		
+    		thread = listenQueue.nextThread();
     	}
-    	numListeners -= 1;
-    	messages = word;
-    	speaker.wake();
-    	locker.release();    	
+    	
+    	wordSent = word;
+    	
+    	Machine.interrupt().restore(intStatus);    	
+    	
     }
 
     /**
@@ -48,24 +54,26 @@ public class Communicator {
      * @return	the integer transferred.
      */    
     public int listen() {
-    	locker.acquire();
-    	numListeners += 1;
-    	listener.wake();
-    	while(numSpeakers == 0){
-    		speaker.sleep();
-    	}
-    	numSpeakers -= 1;
-    	messageHold = messages;
-    	locker.release();
+    	boolean intStatus = Machine.interrupt().disable();
     	
-    	return messageHold;
+    	KThread thread = speakQueue.nextThread();
+    	
+    	listenQueue.waitForAccess(KThread.currentThread());
+    	
+    	if (thread != null) {
+    		thread.ready();
+    	}
+    	
+    	KThread.sleep();
+    	
+    	Machine.interrupt().restore(intStatus);
+    	
+    	
+    	return wordSent;
     }
-    
-    private Condition speaker;
-    private Condition listener;
-    private int numSpeakers = 0;
-    private int numListeners = 0;
-    private int messages = 0;
-    private int messageHold = 0;
-    private Lock locker;
+
+    private int wordSent;
+    private ThreadQueue listenQueue;
+    private ThreadQueue speakQueue;    
 }
+
