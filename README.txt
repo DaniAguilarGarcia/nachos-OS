@@ -40,7 +40,7 @@ Akeem Lake:
 Credits:
 Michael Gonzales: For this test, I create randomWord and delays to test between listeners and speakers. I use an Alarm to implement the delay. The speaker will "speak" their word (random int) and a listener will "listen" for that word. Depending on when finished, the listener or speaker will exit.
 Daniela Aguilar:Tested my teamate work.
-Nivaldo DeMello:	
+Nivaldo DeMello:Updated Communicator class
 Akeem Lake:
 
 (30%, 125 lines) Implement priority scheduling in Nachos by completing the PriorityScheduler class. Priority scheduling is a key building block in real-time systems. Note that in order to use your priority scheduler, you will need to change a line in nachos.conf that specifies the scheduler class to use. The ThreadedKernel.scheduler key is initially equal to nachos.threads.RoundRobinScheduler. You need to change this to nachos.threads.PriorityScheduler when you're ready to run Nachos with priority scheduling. Note that all scheduler classes extend the abstract class nachos.threads.Scheduler. You must implement the methods getPriority(), getEffectivePriority(), and setPriority(). You may optionally also implement increasePriority() and decreasePriority() (these are not required). In choosing which thread to dequeue, the scheduler should always choose a thread of the highest effective priority. If multiple threads with the same highest priority are waiting, the scheduler should choose the one that has been waiting in the queue the longest. An issue with priority scheduling is priority inversion. If a high priority thread needs to wait for a low priority thread (for instance, for a lock held by a low priority thread), and another high priority thread is on the ready list, then the high priority thread will never get the CPU because the low priority thread will not get any CPU time. A partial fix for this problem is to have the waiting thread donate its priority to the low priority thread while it is holding the lock. Implement the priority scheduler so that it donates priority, where possible. Be sure to implement Scheduler.getEffectivePriority(), which returns the priority of a thread after taking into account all the donations it is receiving. Note that while solving the priority donation problem, you will find a point where you can easily calculate the effective priority for a thread, but this calculation takes a long time. To receive full credit for the design aspect of this project, you need to speed this up by caching the effective priority and only recalculating a thread's effective priority when it is possible for it to change. It is important that you do not break the abstraction barriers while doing this part -- the Lock class does not need to be modified. Priority donation should be accomplished by creating a subclass of ThreadQueue that will accomplish priority donation when used with the existing Lock class, and still work correctly when used with the existing Semaphore and Condition classes.
@@ -48,5 +48,5 @@ Akeem Lake:
 Credits:
 Michael Gonzales:
 Daniela Aguilar: 
-Nivaldo DeMello:	
+Nivaldo DeMello:Updated PriorityScheduler class	
 Akeem Lake:
