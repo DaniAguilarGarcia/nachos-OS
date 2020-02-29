@@ -12,7 +12,7 @@ Task 1:
 Credits:
 Michael Gonzales:
 Daniela Aguilar: Tested and manipulated different codes to find the best one to submit. 
-Nivaldo DeMello:	Updated join() with additional code. Updated finish() with the call to join().
+Nivaldo DeMello:Updated join() with additional code. Updated finish() with the call to join().
 Akeem:
 
 (20%, 20 lines) Implement condition variables directly, by using interrupt enable and disable to provide atomicity. We have provided a sample implementation that uses semaphores; your job is to provide an equivalent implementation without directly using semaphores (you may of course still use locks, even though they indirectly use semaphores). Once you are done, you will have two alternative implementations that provide the exact same functionality. Your second implementation of condition variables must reside in class nachos.threads.Condition2.  
@@ -21,16 +21,16 @@ Akeem:
 
 Credits:
 Michael Gonzales:
-Daniela Aguilar: 
-Nivaldo DeMello:	Updated Condition2.java with code for interrupting without semaphores.
+Daniela Aguilar:  Implemented Semaphore class, P() and V() were replace by wake() and sleep()
+Nivaldo DeMello:Updated Condition2.java with code for interrupting without semaphores.
 Akeem Lake:
 
 (20%, 40 lines) Complete the implementation of the Alarm class, by implementing the waitUntil(long x) method. A thread calls waitUntil to suspend its own execution until time has advanced to at least now + x. This is useful for threads that operate in real-time, for example, for blinking the cursor once per second. There is no requirement that threads start running immediately after waking up; just put them on the ready queue in the timer interrupt handler after they have waited for at least the right amount of time. Do not fork any additional threads to implement waitUntil(); you need only modify waitUntil() and the timer interrupt handler. waitUntil is not limited to one thread; any number of threads may call it and be suspended at any one time.  
 
 Credits:
 Michael Gonzales:
-Daniela Aguilar: 
-Nivaldo DeMello:	Updated Alarm.java to wait x amount of time	
+Daniela Aguilar: Implemented waitUntil(long x) method. 
+Nivaldo DeMello:Updated Alarm.java to wait x amount of time	
 Akeem Lake:
 
 (20%, 40 lines) Implement synchronous send and receive of one word messages (also known as Ada-style rendezvous), using condition variables (don't use semaphores!). Implement the Communicator class with operations, void speak(int word) and int listen(). speak() atomically waits until listen() is called on the same Communicator object, and then transfers the word over to listen(). Once the transfer is made, both can return. Similarly, listen() waits until speak() is called, at which point the transfer is made, and both can return (listen() returns the word). Your solution should work even if there are multiple speakers and listeners for the same Communicator (note: this is equivalent to a zero-length bounded buffer; since the buffer has no room, the producer and consumer must interact directly, requiring that they wait for one another). Each communicator should only use exactly one lock. If you're using more than one lock, you're making things too complicated.  
@@ -39,7 +39,7 @@ Akeem Lake:
 
 Credits:
 Michael Gonzales: For this test, I create randomWord and delays to test between listeners and speakers. I use an Alarm to implement the delay. The speaker will "speak" their word (random int) and a listener will "listen" for that word. Depending on when finished, the listener or speaker will exit.
-Daniela Aguilar: 
+Daniela Aguilar:Tested my teamate work.
 Nivaldo DeMello:	
 Akeem Lake:
 
