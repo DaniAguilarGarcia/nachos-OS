@@ -38,7 +38,7 @@ Akeem Lake:
 -For task 4, it required just following the text above to be able to track the necessary calls. One Lock was used alongside 2 Condition variables to keep track of speaker and listener. Thanks for task 2, we used Lock in a similar way.
 
 Credits:
-Michael Gonzales:
+Michael Gonzales: For this test, I create randomWord and delays to test between listeners and speakers. I use an Alarm to implement the delay. The speaker will "speak" their word (random int) and a listener will "listen" for that word. Depending on when finished, the listener or speaker will exit.
 Daniela Aguilar: 
 Nivaldo DeMello:	
 Akeem Lake:
