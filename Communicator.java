@@ -60,10 +60,11 @@ public class Communicator {
     	
     	return messageHold;
     }
-    /*
-     * To track our listeners and speakers and messages to hold word which
-     * is the integer to transfer
-     */
+    
+    public static void selfTest() {
+        CommunicatorTest.runTest();
+    }
+    
     private Condition speaker;
     private Condition listener;
     private int numSpeakers = 0;

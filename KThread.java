@@ -31,10 +31,6 @@ import nachos.machine.*;
  */
 public class KThread {
 	
-	/*Added two new variables for use
-	 * an integer for our called thread
-	 * a LinkedList to add our threads
-	 */
 	public static int calledThread = 0;
 	public static LinkedList joinedList;
 	
@@ -69,8 +65,8 @@ public class KThread {
 
 	    createIdleThread();
 		}
-	// Create our LinkedList for our threads.
 	joinedList = new LinkedList();
+	
     }
     
 
@@ -210,10 +206,6 @@ public class KThread {
 	currentThread.status = statusFinished;
 	
 	sleep();
-	/* Get first thread in our list. If it is
-	 * not null, readys thread and removes first
-	 * thread in our list and resets calledThread to 0.
-	 */
 	KThread thread = (KThread) joinedList.getFirst();
 	if (thread != null){
 	thread.ready();
@@ -301,12 +293,7 @@ public class KThread {
     @SuppressWarnings({ "unchecked", "static-access" })
 	public void join() {
 	Lib.debug(dbgThread, "Joining to thread: " + toString());
-	/* We are using calledThread to be used
-	 * to check what is current thread running
-	 * by tracking if it is finished. We use the list
-	 * to be able to switch between threads by utilizing
-	 *  sleep function.
-	 */
+
 	Lib.assertTrue(this != currentThread);
 	if (this.calledThread == 0){
 
@@ -362,7 +349,7 @@ public class KThread {
      * Dispatch the CPU to this thread. Save the state of the current thread,
      * switch to the new thread by calling <tt>TCB.contextSwitch()</tt>, and
      * load the state of the new thread. The new thread becomes the current
-     * thread.
+     * thread.1
      *
      * <p>
      * If the new thread and the old thread are the same, this method must
@@ -432,9 +419,11 @@ public class KThread {
 	}
 	
 	public void run() {
-	    for (int i=0; i<5; i++) {
+		
+	    for (int i=0; i<5; i++) {    	
 		System.out.println("*** thread " + which + " looped "
 				   + i + " times");
+		
 		currentThread.yield();
 	    }
 	}
@@ -449,6 +438,8 @@ public class KThread {
 	Lib.debug(dbgThread, "Enter KThread.selfTest");
 	
 	new KThread(new PingTest(1)).setName("forked thread").fork();
+	new KThread(new PingTest(2)).setName("forked thread").fork();
+	new KThread(new PingTest(3)).setName("forked thread").fork();
 	new PingTest(0).run();
     }
 
