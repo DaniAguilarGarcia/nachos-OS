@@ -1,4 +1,5 @@
 Nivaldo DeMello
+Panther ID: 2132181
 
 I believe I have questions 1-3 working so far.
 
@@ -6,3 +7,7 @@ I believe I have questions 1-3 working so far.
 	Updated finish() with the call to join()
 2)	Updated Condition2.java with code for interrupting without semaphores
 3)	Updated Alarm.java to wait x amount of time
+4)	Updated Communicator class
+5)	Updated PriorityScheduler class
+
+Modifications are untested. 
