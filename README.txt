@@ -13,7 +13,7 @@ Credits:
 Michael Gonzales:
 Daniela Aguilar: Tested and manipulated different codes to find the best one to submit. 
 Nivaldo DeMello:Updated join() with additional code. Updated finish() with the call to join().
-Akeem Lake:  
+Akeem Lake: Implemented lines to add current thread to join queue and sleep current thread 
 
 (20%, 20 lines) Implement condition variables directly, by using interrupt enable and disable to provide atomicity. We have provided a sample implementation that uses semaphores; your job is to provide an equivalent implementation without directly using semaphores (you may of course still use locks, even though they indirectly use semaphores). Once you are done, you will have two alternative implementations that provide the exact same functionality. Your second implementation of condition variables must reside in class nachos.threads.Condition2.  
 
@@ -23,7 +23,7 @@ Credits:
 Michael Gonzales:
 Daniela Aguilar:  Implemented Semaphore class, P() and V() were replace by wake() and sleep()
 Nivaldo DeMello:Updated Condition2.java with code for interrupting without semaphores.
-Akeem Lake:
+Akeem Lake: implemented lines in sleep method which add thread to wait queue, make current thread sleep  
 
 (20%, 40 lines) Complete the implementation of the Alarm class, by implementing the waitUntil(long x) method. A thread calls waitUntil to suspend its own execution until time has advanced to at least now + x. This is useful for threads that operate in real-time, for example, for blinking the cursor once per second. There is no requirement that threads start running immediately after waking up; just put them on the ready queue in the timer interrupt handler after they have waited for at least the right amount of time. Do not fork any additional threads to implement waitUntil(); you need only modify waitUntil() and the timer interrupt handler. waitUntil is not limited to one thread; any number of threads may call it and be suspended at any one time.  
 
