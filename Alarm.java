@@ -2,9 +2,7 @@ package nachos.threads;
 
 import nachos.machine.*;
 
-import java.util.TreeSet; //AL
-import java.util.Iterator; //AL 
-import java.util.SortedSet; //AL 
+import java.util.*; //AL
 
 
 /**
