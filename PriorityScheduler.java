@@ -5,9 +5,7 @@ import nachos.machine.*;
 import java.util.*; 
 
 //Akeem Lake
-//import java.util.TreeSet;
-//import java.util.HashSet;
-//import java.util.Iterator;
+
 
 
 /**
@@ -147,8 +145,8 @@ public class PriorityScheduler extends Scheduler {
 
 	    ThreadState state = getThreadState(thread);
 
-	    //if I have a holder and I transfer priority
-	    //remove myself from the holder's resource list
+	    /*if I have a holder and I transfer priority
+	    remove myself from the holder's resource list */
 	    if(this.holder != null && this.transferPriority){
 	    	this.holder.reslist.remove(this);
 	    }
@@ -212,7 +210,7 @@ public class PriorityScheduler extends Scheduler {
 
 	public int getEffectivePriority(){ //ADDED START
 		
-		//if do not transfer priority, return minimum priority
+		// return minimum priority, if do not transfer priority.
 		if(transferPriority == false){
 			
 			return priorityMinimum;
@@ -392,14 +390,17 @@ public class PriorityScheduler extends Scheduler {
 	 * @see	nachos.threads.ThreadQueue#nextThread
 	 */
 	public void acquire(PriorityQueue waitQueue) {
-	    //implement me
+		
+	   //Lib.assertTrue(waitQueue.waitQueue.isEmpty()); //AL
+		
+		//implement me
 		Lib.assertTrue(Machine.interrupt().disabled()); //ADDED
-		//Lib.assertTrue(waitQueue.waitQueue.isEmpty()); //ADDED
+		 
 
-		//add waitQueue to resource list
+		//add Queue to resource list
 		reslist.add(waitQueue); //ADDED
 
-		//clean waitingOn if waitQueue is just waiting on
+		// if Queue is waiting, clean
 		if (waitQueue == waitingOn){ //ADDED
 			waitingOn = null; //ADDED
 		}
