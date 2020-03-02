@@ -47,6 +47,6 @@ Akeem Lake: added lines into listen and speak methods
 
 Credits:
 Michael Gonzales:
-Daniela Aguilar: 
+Daniela Aguilar: Tested the code my friends built before submitting 
 Nivaldo DeMello: Updated PriorityScheduler class	
 Akeem Lake: Implemented Acquire and nextThread method 
