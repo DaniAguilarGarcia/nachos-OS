@@ -82,9 +82,7 @@ public class Alarm {
 	    KThread.yield(); */
 	
 	boolean intStatus = Machine.interrupt().disable(); //AL
-	//Lib.debug(dbgAlarm,"At " + (wakeTime-x) + " cycles, sleeping thread " + KThread.currentThread().toString() + "until" + wakeTime + " cycles");//added-2
-	//set.add(new Pair(KThread.currentThread(), wakeTime));  //added-2
-	    
+	
 	WaitingThread toAlarm = new WaitingThread(wakeTime, KThread.currentThread()); //AL
 	
 	Lib.debug(dbgInt, "Wait thread "+ KThread.currentThread().getName() + "until " + 
