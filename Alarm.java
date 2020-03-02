@@ -20,7 +20,7 @@ public class Alarm {
      * alarm.
      */
     public Alarm() {
-    	waiting = new TreeSet<WaitingThread>(); //AL Added
+    	waiting = new TreeSet<WaitingThread>(); //AL 
 	Machine.timer().setInterruptHandler(new Runnable() {
 		public void run() { timerInterrupt(); }
 	    });
@@ -33,32 +33,31 @@ public class Alarm {
      * that should be run.
      */
     public void timerInterrupt() {
-	//KThread.currentThread().yield();
 	
-	long time = Machine.timer().getTime(); // AL ADDED
+	long time = Machine.timer().getTime(); // AL 
 	
-	if(waiting.isEmpty()) //AL ADDED
-		return; //AL ADDED 
+	if(waiting.isEmpty()) //AL 
+		return; //AL 
 	
-	if(((WaitingThread) waiting.first()).time > time) //AL ADDED 
-	    return;  //AL ADDED 
+	if(((WaitingThread) waiting.first()).time > time) //AL 
+	    return;  //AL 
 	    
-	Lib.debug(dbgInt, "Invoking Alarm.timerInterrupt at time = " + time); //AL ADDED 
+	Lib.debug(dbgInt, "Invoking Alarm.timerInterrupt at time = " + time); //AL 
 	
-	while(!waiting.isEmpty() && ((WaitingThread) waiting.first()).time <= time){//ADDED
-		WaitingThread next = (WaitingThread) waiting.first(); //ADDED
+	while(!waiting.isEmpty() && ((WaitingThread) waiting.first()).time <= time){ //AL
+		WaitingThread next = (WaitingThread) waiting.first(); //AL
 		
-		//ADDED - move due thread to waiting thread 
-		next.thread.ready(); //ADDED
+		//AL - move threads that are due to waiting thread 
+		next.thread.ready(); //AL
 		
-		waiting.remove(next); //ADDED
+		waiting.remove(next); //AL
 		
-		Lib.assertTrue(next.time <= time); //ADDED
+		Lib.assertTrue(next.time <= time); //AL
 		
-		Lib.debug(dbgInt," " + next.thread.getName()); //ADDED
+		Lib.debug(dbgInt," " + next.thread.getName()); //AL
 	}
 	
-	Lib.debug(dbgInt, " (end of Alarm.timerInterrupt)"); //ADDED
+	Lib.debug(dbgInt, " (end of Alarm.timerInterrupt)"); //AL
 			}
 
     /**
@@ -79,29 +78,30 @@ public class Alarm {
 	// for now, cheat just to get something working (busy waiting is bad)
 	long wakeTime = Machine.timer().getTime() + x;
 	
-	//while (wakeTime > Machine.timer().getTime()) //included- might delete
-	    //KThread.yield(); //included, might delete
+	/* while (wakeTime > Machine.timer().getTime()) 
+	    KThread.yield(); */
 	
-	boolean intStatus = Machine.interrupt().disable(); //added-1
+	boolean intStatus = Machine.interrupt().disable(); //AL
 	//Lib.debug(dbgAlarm,"At " + (wakeTime-x) + " cycles, sleeping thread " + KThread.currentThread().toString() + "until" + wakeTime + " cycles");//added-2
 	//set.add(new Pair(KThread.currentThread(), wakeTime));  //added-2
-	WaitingThread toAlarm = new WaitingThread(wakeTime, KThread.currentThread()); //added
+	    
+	WaitingThread toAlarm = new WaitingThread(wakeTime, KThread.currentThread()); //AL
 	
 	Lib.debug(dbgInt, "Wait thread "+ KThread.currentThread().getName() + "until " + 
-	wakeTime); //added -1
+	wakeTime); //AL
 	
-	waiting.add(toAlarm); //added-1
+	waiting.add(toAlarm); //AL
 	
-	KThread.sleep(); //added -1
+	KThread.sleep(); //AL
 	
-	Machine.interrupt().restore(intStatus); //Added -1
+	Machine.interrupt().restore(intStatus); //AL
     }
 
 
-private static final char dbgInt = 'i'; //Added
-private TreeSet<WaitingThread> waiting; //Added
+private static final char dbgInt = 'i'; //AL
+private TreeSet<WaitingThread> waiting; //AL
 
-//Added 
+//AL
 private class WaitingThread implements Comparable{
 	 WaitingThread(long time, KThread thread){
 		 this.time = time;
@@ -112,7 +112,6 @@ private class WaitingThread implements Comparable{
 {
 		 WaitingThread toOccur = (WaitingThread) o;
 
-		 //can't return 0 for unequal objects, so check all fields
 		 if(time < toOccur.time)
 			 return -1;
 		 else if(time > toOccur.time)
@@ -138,7 +137,7 @@ private static class AlarmTest implements Runnable {
 	
 	private long time;
 }
-//Added might delete later
+
 public static void selfTest(){
 	System.out.print("Enter Alarm.selfTest\n");
 	
