@@ -2,11 +2,8 @@ package nachos.threads;
 
 import nachos.machine.*;
 
-import java.util.*; 
+import java.util.*; //AL
 
-//import java.util.TreeSet;
-//import java.util.HashSet;
-//import java.util.Iterator;
 
 
 /**
@@ -142,12 +139,12 @@ public class PriorityScheduler extends Scheduler {
 	    Lib.assertTrue(Machine.interrupt().disabled());
 	    getThreadState(thread).acquire(this);
 
-	    //ADDED THIS START
+	    //AL Sart 
 
 	    ThreadState state = getThreadState(thread);
 
-	    //if I have a holder and I transfer priority
-	    //remove myself from the holder's resource list
+	    /* if I have a holder and I transfer priority
+	    remove myself from the holder's resource list */
 	    if(this.holder != null && this.transferPriority){
 	    	this.holder.reslist.remove(this);
 	    }
@@ -155,14 +152,14 @@ public class PriorityScheduler extends Scheduler {
 	    this.holder = state;
 
 	    state.acquire(this);
-	} //ADDED THIS END
+	} //AL End
 
 	public KThread nextThread() {
 	    Lib.assertTrue(Machine.interrupt().disabled());
 	    // implement me
 	    //return null
 
-	    //ADDED THIS START
+	    //AL Start
 	    if(waitQueue.isEmpty()){
 	    return null;
 	    }
@@ -178,7 +175,7 @@ public class PriorityScheduler extends Scheduler {
 	    	getThreadState(firstThread).acquire(this);
 	    }
 	    return firstThread;
-	} //ADDED THIS END
+	} //AL End
 
 
 	/**
@@ -192,7 +189,7 @@ public class PriorityScheduler extends Scheduler {
 	    // implement me
 	    //return null;
 
-		KThread nextThread = null; //Added Start
+		KThread nextThread = null; //AL Start
 
 
 		for(Iterator<KThread> ts = waitQueue.iterator(); ts.hasNext();){
@@ -209,9 +206,9 @@ public class PriorityScheduler extends Scheduler {
 	}
 
 
-	public int getEffectivePriority(){ //ADDED START
+	public int getEffectivePriority(){ //AL START
 		
-		//if do not transfer priority, return minimum priority
+		//return minimum priority, if do not transfer priority
 		if(transferPriority == false){
 			
 			return priorityMinimum;
@@ -229,9 +226,9 @@ public class PriorityScheduler extends Scheduler {
 			dirty = false;
 		}
 		return effectivePriority;
-	} //ADDED END
+	} //AL END
 
-	public void setDirty(){ //ADDED START
+	public void setDirty(){ //AL START
 		if(transferPriority == false){
 			return;
 		}
@@ -241,19 +238,19 @@ public class PriorityScheduler extends Scheduler {
 		if(holder != null){
 			holder.setDirty();
 		}
-	} //ADDED END
+	} //AL END
 
 	public void print() {
 	    Lib.assertTrue(Machine.interrupt().disabled());
 	    // implement me (if you want)
 
-	    for (Iterator<KThread> it = waitQueue.iterator(); it.hasNext();){ //ADDED STARTED HERE
+	    for (Iterator<KThread> it = waitQueue.iterator(); it.hasNext();){ //AL START
 	    	KThread currentThread = it.next();
 	    	int priority = getThreadState(currentThread).getPriority();
 
 	    	System.out.print("Thread: " + currentThread
 	    			+ "\t Priority: " + priority + "\n");
-	    } //ADDED END HERE
+	    } //AL END
 	}
 
 	/**
@@ -262,7 +259,7 @@ public class PriorityScheduler extends Scheduler {
 	 */
 	public boolean transferPriority;
 
-	//ADDED END HERE
+	
 
 	//queue waiting on this resource
 	private LinkedList<KThread> waitQueue = new LinkedList<KThread>(); //AL ADDED
@@ -277,7 +274,7 @@ public class PriorityScheduler extends Scheduler {
 	//The cached highest of the effective priorities in the waitQueue.
 	//This value is invalidated while dirty is true
 	private int effectivePriority;
-    } //ADDED END
+    } //AL END
 
     /**
      * The scheduling state of a thread. This should include the thread's
@@ -316,7 +313,7 @@ public class PriorityScheduler extends Scheduler {
 	public int getEffectivePriority() {
 	    // implement me
 
-		int maxEffective = this.priority; //FROM HERE - ADDED
+		int maxEffective = this.priority; //AL Start
 
 		if(dirty){
 			for(Iterator<ThreadQueue> it = reslist.iterator(); it.hasNext();){
@@ -328,7 +325,7 @@ public class PriorityScheduler extends Scheduler {
 			}
 		}
 		//return priority;
-		return maxEffective; //TO HERE -ADDED
+		return maxEffective; //AL END
 	}
 
 	/**
@@ -361,7 +358,7 @@ public class PriorityScheduler extends Scheduler {
 	public void waitForAccess(PriorityQueue waitQueue) {
 	    // implement me
 
-		Lib.assertTrue(Machine.interrupt().disabled()); //ADDED START
+		Lib.assertTrue(Machine.interrupt().disabled()); //AL START
 		Lib.assertTrue(waitQueue.waitQueue.indexOf(thread) == -1);
 
 		waitQueue.waitQueue.add(thread);
@@ -376,7 +373,7 @@ public class PriorityScheduler extends Scheduler {
 	  if(reslist.indexOf(waitQueue) != -1){
 		reslist.remove(waitQueue);
 		waitQueue.holder = null;
-	    } //ADDED END
+	    } //AL END
 
 	}
 
@@ -392,22 +389,22 @@ public class PriorityScheduler extends Scheduler {
 	 */
 	public void acquire(PriorityQueue waitQueue) {
 	    //implement me
-		Lib.assertTrue(Machine.interrupt().disabled()); //ADDED
-		//Lib.assertTrue(waitQueue.waitQueue.isEmpty()); //ADDED
+		Lib.assertTrue(Machine.interrupt().disabled()); //AL
+		//Lib.assertTrue(waitQueue.waitQueue.isEmpty()); //AL
 
 		//add waitQueue to resource list
-		reslist.add(waitQueue); //ADDED
+		reslist.add(waitQueue); //AL
 
 		//clean waitingOn if waitQueue is just waiting on
-		if (waitQueue == waitingOn){ //ADDED
-			waitingOn = null; //ADDED
+		if (waitQueue == waitingOn){ //AL
+			waitingOn = null; //AL
 		}
     //set dirty flag
-		setDirty(); //ADDED
+		setDirty(); //AL
 	}
 
 
-	public void setDirty(){ //ADDED START
+	public void setDirty(){ //AL Start
 		if(dirty){
 			return;
 		}
@@ -418,7 +415,7 @@ public class PriorityScheduler extends Scheduler {
 		if(pg != null){
 			pg.setDirty();
 		}
-	} //ADDED END
+	} //AL End
 
 
 
@@ -428,13 +425,13 @@ public class PriorityScheduler extends Scheduler {
 	/** The priority of the associated thread. */
 	protected int priority;
 
-	protected int effectivePriority; //ADDED
+	protected int effectivePriority; //AL
 
-	protected LinkedList<ThreadQueue> reslist = new LinkedList<ThreadQueue>(); //ADDED
+	protected LinkedList<ThreadQueue> reslist = new LinkedList<ThreadQueue>(); //AL
 
-	protected ThreadQueue waitingOn; //ADDED
+	protected ThreadQueue waitingOn; //AL
 
-	private boolean dirty = false; //ADDED
+	private boolean dirty = false; //AL
 
 
     }
