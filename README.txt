@@ -1,5 +1,5 @@
-Group Members and Student IDs:
-Daniela Aguilar (6089603), Akeem Lake(6136179), Nivaldo DeMello (2132181),Michael Gonzalez(1584041).
+Group Members:
+Daniela Aguilar (, Akeem Lake, Nivaldo DeMello ,Michael Gonzalez.
 
 Accomplishments per task(and credits):
 
